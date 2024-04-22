@@ -91,7 +91,8 @@ while(1):
 		# prediction from the model. This is so that
 		# the HiFive can run the other functions in between
 		if count%4 == 0:
-			pass
+			ser1.write(bytes(deg))
+			ser1.write("\n")
 			#Your code here.
 
 		
@@ -105,7 +106,7 @@ while(1):
 		pred_time = (pred_end - pred_start)*1000
 		tot_time  = (pred_end - cam_start)*1000
 
-		print('pred: {:0.2f} deg. took: {:0.2f} ms | cam={:0.2f} prep={:0.2f} pred={:0.2f}'.format(deg, tot_time, cam_time, prep_time, pred_time))
+		#print('pred: {:0.2f} deg. took: {:0.2f} ms | cam={:0.2f} prep={:0.2f} pred={:0.2f}'.format(deg, tot_time, cam_time, prep_time, pred_time))
 		
 		#Don't include the timings for the first frame due to cache warmup
 		if first_frame:
