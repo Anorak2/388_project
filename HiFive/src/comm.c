@@ -15,20 +15,24 @@ void auto_brake(int devid)
             printf("%d\n", dist);
             
             if(dist > 200){
-                gpio_write(RED_LED, OFF);
-                gpio_write(GREEN_LED, ON);
+            gpio_write(RED_LED, OFF);
+            gpio_write(GREEN_LED, ON);
             }
             else if(dist > 100){
                 gpio_write(GREEN_LED, ON);
                 gpio_write(RED_LED, ON);
             }
-            else{
+            else if(dist > 60){
                 gpio_write(RED_LED, ON);
                 gpio_write(GREEN_LED, OFF);
-                delay(100);
+            }
+            else if(dist > 0){
+                gpio_write(RED_LED, ON);
+                gpio_write(GREEN_LED, OFF);
+                delay(50);
                 gpio_write(RED_LED, OFF);
                 gpio_write(GREEN_LED, OFF);
-                delay(100);
+                delay(50);
             }
         }
 }
@@ -40,8 +44,7 @@ int read_from_pi(int devid)
     // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
     if (ser_isready(devid)){
         char data[100];
-        ser_readline(1, 100, data);
-        ser_printline(0,data);
+        ser_readline(devid, 100, data);
         int angle = atoi(data);
         return angle;
     }
@@ -55,7 +58,7 @@ void steering(int gpio, int pos)
     int SERVO_PULSE_MAX = 2400;
     int SERVO_PULSE_MIN = 544;
     int SERVO_PERIOD = 20000;
-    float val = (pos*10)+ SERVO_PULSE_MIN;
+    float val = (pos*((SERVO_PULSE_MAX-SERVO_PULSE_MIN)/180))+ SERVO_PULSE_MIN;
     gpio_write(PIN_19, ON);
     delay_usec(val);
     gpio_write(PIN_19, OFF);
